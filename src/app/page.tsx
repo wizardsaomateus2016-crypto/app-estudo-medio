@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Brain, Sparkles, Crown, UserCircle, Mail, Calendar, LogIn, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,19 +9,35 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label"
 
 export default function Home() {
+  const router = useRouter()
   const [nome, setNome] = useState("")
   const [idade, setIdade] = useState("")
   const [email, setEmail] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsLoading(true)
+    
+    // Simula criação de conta
     console.log({ nome, idade, email })
-    // Aqui você pode adicionar a lógica de cadastro
+    
+    // Aguarda um momento para feedback visual
+    await new Promise(resolve => setTimeout(resolve, 800))
+    
+    // Redireciona para o dashboard
+    router.push("/dashboard")
   }
 
   const handleEntrarConvidado = () => {
     console.log("Entrando como convidado...")
-    // Aqui você pode adicionar a lógica para entrar como convidado
+    // Redireciona para o dashboard como convidado
+    router.push("/dashboard?modo=convidado")
+  }
+
+  const handleAssinarPro = () => {
+    // Redireciona para página de assinatura
+    router.push("/assinatura")
   }
 
   return (
@@ -135,8 +152,9 @@ export default function Home() {
                 <Button 
                   type="submit" 
                   className="w-full h-12 text-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg"
+                  disabled={isLoading}
                 >
-                  Criar conta gratuita
+                  {isLoading ? "Criando conta..." : "Criar conta gratuita"}
                 </Button>
               </form>
 
@@ -202,7 +220,10 @@ export default function Home() {
                       </li>
                     </ul>
 
-                    <Button className="w-full h-11 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white font-semibold shadow-lg">
+                    <Button 
+                      className="w-full h-11 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white font-semibold shadow-lg"
+                      onClick={handleAssinarPro}
+                    >
                       <Crown className="w-4 h-4 mr-2" />
                       Assinar PRO - R$ 19,90/mês
                     </Button>
